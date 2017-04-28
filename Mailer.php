@@ -73,7 +73,7 @@ class Mailer extends \yii\swiftmailer\Mailer
                 ->setSubject($this->subject)
                 ->send();
 		} catch (\Exception $e) {
-			\Yii::error($e.message);
+			\Yii::error($e->getMessage());
 		}	
     }
 
