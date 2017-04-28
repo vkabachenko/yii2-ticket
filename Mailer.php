@@ -61,16 +61,20 @@ class Mailer extends \yii\swiftmailer\Mailer
      */
     public function senda($view)
     {
-        $this->mail->compose($view, [
-            'nameTicket' => $this->nameTicket,
-            'textTicket' => $this->textTicket,
-            'status' => $this->status,
-            'link' => $this->urlTicket,
-        ])
-            ->setFrom(\Yii::$app->params['adminEmail'])
-            ->setTo($this->setTo)
-            ->setSubject($this->subject)
-            ->send();
+        try {
+	     	$this->mail->compose($view, [
+                'nameTicket' => $this->nameTicket,
+                'textTicket' => $this->textTicket,
+                'status' => $this->status,
+                'link' => $this->urlTicket,
+            ])
+                ->setFrom(\Yii::$app->params['adminEmail'])
+                ->setTo($this->setTo)
+                ->setSubject($this->subject)
+                ->send();
+		} catch (\Exception $e) {
+			\Yii::error($e.message);
+		}	
     }
 
     /**
