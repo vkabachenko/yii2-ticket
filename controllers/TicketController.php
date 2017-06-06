@@ -152,7 +152,6 @@ class TicketController extends Controller
         return $this->render('open', [
             'ticketHead' => $ticketHead,
             'ticketBody' => $ticketBody,
-            'qq' => $this->module->qq,
             'fileTicket' => $ticketFile,
         ]);
     }

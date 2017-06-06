@@ -14,7 +14,7 @@ use ricco\ticket\Module;
  *
  * @property integer $id
  * @property integer $user_id
- * @property string $department
+ * @property integer $department_id
  * @property string $topic
  * @property integer $status
  * @property string $date_update
@@ -60,10 +60,10 @@ class TicketHead extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'topic'], 'required'],
-            [['user_id', 'status'], 'integer'],
+            [['user_id', 'status', 'department_id'], 'integer'],
             [['date_update'], 'safe'],
-            [['department', 'topic'], 'string', 'max' => 255],
-            [['department', 'topic'], 'filter', 'filter' => 'strip_tags'],
+            [['topic'], 'string', 'max' => 255],
+            [['topic'], 'filter', 'filter' => 'strip_tags'],
         ];
     }
 
@@ -88,7 +88,7 @@ class TicketHead extends \yii\db\ActiveRecord
         return [
             'id'          => 'ID',
             'user_id'     => 'User ID',
-            'department'  => 'Отдел',
+            'department_id'  => 'Отдел',
             'topic'       => 'Тема',
             'status'      => 'Status',
             'date_update' => 'Последнее обновление',
@@ -102,7 +102,7 @@ class TicketHead extends \yii\db\ActiveRecord
      */
     public function dataProviderUser()
     {
-        $query = TicketHead::find()->where("user_id = " . Yii::$app->user->id);
+        $query = TicketHead::find()->with('department')->where("user_id = " . Yii::$app->user->id);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -126,7 +126,7 @@ class TicketHead extends \yii\db\ActiveRecord
      */
     public function dataProviderAdmin()
     {
-        $query = TicketHead::find()->joinWith('userName');
+        $query = TicketHead::find()->with('department')->joinWith('userName');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -200,6 +200,14 @@ class TicketHead extends \yii\db\ActiveRecord
         }
 
         return parent::beforeDelete();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartment()
+    {
+        return $this->hasOne(TicketDepartment::className(), ['id' => 'department_id']);
     }
 
 }

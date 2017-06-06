@@ -129,7 +129,6 @@ class AdminController extends Controller
         return $this->render('open', [
             'ticketHead' => $ticketHead,
             'ticketBody' => $ticketBody,
-            'qq'         => $this->module->qq,
             'users'      => $users,
         ]);
     }
