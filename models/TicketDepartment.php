@@ -28,7 +28,7 @@ class TicketDepartment extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function DepartmentList()
+    public static function departmentList()
     {
         return self::find()->select(['title', 'id'])->orderBy('title')->indexBy('id')->column();
     }
