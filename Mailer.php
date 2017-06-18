@@ -33,12 +33,12 @@ class Mailer extends \yii\swiftmailer\Mailer
      * @param $id int
      * @return $this
      */
-    public function sendMailDataTicket($nameTicket, $status, $id, $textTicket = '')
+    public function sendMailDataTicket($nameTicket, $status, $link, $textTicket = '')
     {
         $this->nameTicket = $nameTicket;
         $this->textTicket = $textTicket;
         $this->status = $status;
-        $this->urlTicket = $this->getLinkTicket($id);
+        $this->urlTicket = $link;
 
         return $this;
     }
@@ -77,12 +77,4 @@ class Mailer extends \yii\swiftmailer\Mailer
 		}	
     }
 
-    /**
-     * @param $id int Id Тикета
-     * @return string Возвращает ссылку на тикет
-     */
-    private function getLinkTicket($id)
-    {
-        return Url::to(['/ticket/ticket/view'], true) . "?id=" . $id;
-    }
 }

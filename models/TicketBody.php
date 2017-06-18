@@ -90,7 +90,7 @@ class TicketBody extends \yii\db\ActiveRecord
         if ($this->module->mailSend !== false && $ticketHead->status != TicketHead::CLOSED) {
             $userModel = User::$user;
             (new Mailer())
-                ->sendMailDataTicket($ticketHead->topic, $ticketHead->status, $ticketHead->id,
+                ->sendMailDataTicket($ticketHead->topic, $ticketHead->status, $ticketHead->link,
                     $this->text)
                 ->setDataFrom($this->client == null ? Yii::$app->params['adminEmail'] : $userModel::findOne([
                     'id' => $ticketHead->user_id,

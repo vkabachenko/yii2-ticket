@@ -8,6 +8,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 use ricco\ticket\Module;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "ticket_head".
@@ -18,6 +19,7 @@ use ricco\ticket\Module;
  * @property string $topic
  * @property integer $status
  * @property string $date_update
+ * @property string $link
  */
 class TicketHead extends \yii\db\ActiveRecord
 {
@@ -201,6 +203,17 @@ class TicketHead extends \yii\db\ActiveRecord
 
         return parent::beforeDelete();
     }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert && !$this->link) {
+            $this->link = Url::to(['/ticket/ticket/view', 'id' => $this->id], true);
+            $this->save();
+        }
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery
