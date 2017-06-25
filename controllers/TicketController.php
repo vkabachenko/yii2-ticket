@@ -10,6 +10,7 @@ use yii\filters\AccessControl;
 use yii\filters\AccessRule;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\UploadedFile;
 
 /**
@@ -60,6 +61,10 @@ class TicketController extends Controller
     public function actionView($id)
     {
         $ticket = TicketHead::findOne($id);
+        if ($ticket && $ticket->user_id !== \Yii::$app->user->id) {
+            throw new ForbiddenHttpException();
+        }
+
         if ($ticket && $ticket->status == TicketHead::ANSWER) {
             $ticket->status = TicketHead::VIEWED;
             $ticket->save();

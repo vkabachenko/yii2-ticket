@@ -10,6 +10,7 @@ use ricco\ticket\Module;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @property Module $module
@@ -25,6 +26,7 @@ class AdminController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkAdmin();
         $dataPrivider = (new TicketHead())->dataProviderAdmin();
         Url::remember();
 
@@ -42,6 +44,7 @@ class AdminController extends Controller
      */
     public function actionAnswer($id)
     {
+        $this->checkAdmin();
         $thisTicket = TicketBody::find()->where(['id_head' => $id])->joinWith('file')->asArray()->orderBy('date DESC')->all();
         $newTicket = new TicketBody();
 
@@ -71,6 +74,7 @@ class AdminController extends Controller
      */
     public function actionClosed($id)
     {
+        $this->checkAdmin();
         $model = TicketHead::findOne($id);
 
         $model->status = TicketHead::CLOSED;
@@ -94,6 +98,7 @@ class AdminController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkAdmin();
         TicketHead::findOne($id)->delete();
 
         return $this->redirect(Url::to(['/ticket/admin/index']));
@@ -101,6 +106,7 @@ class AdminController extends Controller
 
     public function actionOpen()
     {
+        $this->checkAdmin();
         $ticketHead = new TicketHead();
         $ticketBody = new TicketBody();
 
@@ -131,5 +137,12 @@ class AdminController extends Controller
             'ticketBody' => $ticketBody,
             'users'      => $users,
         ]);
+    }
+
+    private function checkAdmin()
+    {
+        if (!in_array(\Yii::$app->user->identity->username, $this->module->admin)) {
+            throw new ForbiddenHttpException();
+        }
     }
 }
